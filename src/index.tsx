@@ -4,12 +4,14 @@ import { createRoot } from 'react-dom/client';
 import * as serviceWorker from 'serviceWorker';
 import {BrowserRouter} from "react-router-dom";
 import {AppNavigation} from "navigation/AppNavigation";
+import {CssBaseline} from "@mui/material";
 const root = createRoot(
   document.getElementById('root') as HTMLDivElement
 );
 root.render(
   <React.StrictMode>
       <BrowserRouter>
+        <CssBaseline />
         {/* header */}
         <AppNavigation />
         {/* footer */}

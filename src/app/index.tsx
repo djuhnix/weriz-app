@@ -1,5 +1,6 @@
 import React from 'react';
 import { Outlet } from "react-router-dom";
+import {Container} from "@mui/material";
 
 export const App = () => {
   // if user logged in navigate to 'feed'
@@ -11,9 +12,9 @@ export const App = () => {
       <aside>
         {/*  */}
       </aside>
-      <main>
+      <Container component="main" maxWidth="xs">
         <Outlet/>
-      </main>
+      </Container>
       <aside>
 
       </aside>
