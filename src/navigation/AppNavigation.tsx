@@ -1,24 +1,27 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
-import { App } from "app";
-import { Login } from "app/login/Login";
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { App } from 'src/app'
+import { AuthPage } from 'src/app/auth/AuthPage'
+import { Routes as Path } from './Routes'
+import { RequireAuth } from './RequireAuth'
+export interface AppNavigationProps {}
 
-export interface AppNavigationProps {
-
-}
-
-export const AppNavigation: React.FC<AppNavigationProps> = (
-  {}
-) => {
+export const AppNavigation: React.FC<AppNavigationProps> = () => {
   return (
     <Routes>
-      <Route path="/" element={<App />}>
-        <Route index element={<Login />} />
-        <Route path="login" element={<Login />} />
-        <Route path="landing" element={<span>Landing</span>} />
-        <Route path="feed" element={<span>Feed</span>} />
+      <Route path={Path.root} element={<App />}>
+        <Route index element={<AuthPage />} />
+        <Route path={Path.landing} element={<span>Landing</span>} />
+        <Route path={Path.login} element={<AuthPage />} />
 
+        <Route path={Path.feed} element={
+          <RequireAuth>
+            <span>Feed</span>
+          </RequireAuth>
+        }/>
+
+        <Route path="*" element={<p>There s nothing here: 404!</p>} />
       </Route>
     </Routes>
-  );
+  )
 }

@@ -1,13 +1,13 @@
-import React from 'react';
-import {Link} from "react-router-dom";
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 interface DropdownLink {
-  title: string;
-  path: string;
+  title: string
+  path: string
 }
 
 interface IProps {
-  title: string;
+  title: string
   links: DropdownLink[]
 }
 
@@ -28,11 +28,11 @@ const HeaderDropdown = (props: IProps) => {
   return (
     <li className="nav__dropdown dropdown-wrapper" id="menu-1">
       <Link to="#" className="nav__dropdown-info dropdown-info">
-        { title }
+        {title}
       </Link>
       {renderPath(links)}
     </li>
-  );
-};
+  )
+}
 
-export default HeaderDropdown;
+export default HeaderDropdown

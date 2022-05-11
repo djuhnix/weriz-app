@@ -1,6 +1,13 @@
 export enum Routes {
-  root = "/",
-  login = "/login",
-  signup = "/signup",
-  forgetPassword = "/forget_password"
+  root = '/',
+  rootLogin = '/login',
+  rootSignup = '/signup',
+  rootForgetPassword = '/forget-password',
+  rootLanding = '/landing',
+  rootFeed = '/feed',
+
+  login = 'login',
+  signup = 'signup',
+  landing = 'landing',
+  feed = 'feed',
 }
