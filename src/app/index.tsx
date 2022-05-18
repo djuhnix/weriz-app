@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Container } from '@mui/material'
 import { selectIsAuthenticated } from 'src/store/auth/authSelector'
@@ -8,18 +8,20 @@ import { Routes } from 'src/navigation/Routes'
 export const App = () => {
   const isAuthenticated = selector(selectIsAuthenticated);
   const navigate = useNavigate();
-  if (isAuthenticated) {
-    return <Navigate to={Routes.rootFeed} />;
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(Routes.rootFeed);
+    }
+  }, []);
   // other case navigate to landing (create or join community)
   // -> registration
   return (
-    <div className="App">
+    <>
       <aside>{/*  */}</aside>
       <Container component="main" maxWidth="xs">
         <Outlet />
       </Container>
       <aside></aside>
-    </div>
+    </>
   )
 }
