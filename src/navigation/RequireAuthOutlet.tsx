@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { selectIsAuthenticated } from '../store/auth/authSelector'
 import { selector } from 'src/store'
 import { RequireAuthProps } from './RequireAuth'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { Routes } from './Routes'
 
 /**
@@ -17,7 +17,11 @@ import { Routes } from './Routes'
  */
 export const RequireAuthOutlet = (props: Pick<RequireAuthProps, 'redirectPath'>) => {
   const isAuth = selector(selectIsAuthenticated);
-  return isAuth
-    ? <Outlet />
-    : <Navigate to={props.redirectPath || Routes.login} replace />;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isAuth) {
+      navigate(props.redirectPath || Routes.rootLogin, {replace: true});
+    }
+  });
+  return <Outlet />;
 };
