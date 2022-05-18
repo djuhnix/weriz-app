@@ -1,3 +1,4 @@
-export enum LOCAL_STORAGE {
-  ACCESS_TOKEN = 'accessToken',
+export enum STORAGE {
+  TOKEN_DATA = 'tokenData',
+  USER = 'user'
 }
