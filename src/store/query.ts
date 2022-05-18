@@ -1,11 +1,10 @@
 // initialize an empty api service that we'll inject endpoints into later as needed
-import { fetchBaseQuery, retry } from '@reduxjs/toolkit/dist/query/react';
+import { fetchBaseQuery, retry } from '@reduxjs/toolkit/query/react';
 import { Config } from 'src/config';
-// import { RootState } from './';
+import { RootState } from 'src/store';
 
 export const baseQuery = fetchBaseQuery({
   baseUrl: Config.API_BASE_URL,
-  /*
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.tokenData.token
 
@@ -16,7 +15,11 @@ export const baseQuery = fetchBaseQuery({
 
     return headers
   },
-   */
 });
 
-export const baseQueryWithRetry = retry(baseQuery, { maxRetries: 6 });
+export type ApiResponse<Data> = {
+  message: string;
+  data: Data;
+}
+
+export const baseQueryWithRetry = retry(baseQuery, { maxRetries: 3 });
