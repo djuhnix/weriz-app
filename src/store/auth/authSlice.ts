@@ -2,20 +2,25 @@ import { createSlice } from '@reduxjs/toolkit'
 import { AuthModel } from './authModel';
 import { authApi } from './authApi';
 import { UserModel } from '../user/userModel';
+import { STORAGE } from 'src/enum/storage'
+import store from 'store';
+import { merge } from 'lodash'
 
 interface AuthState extends AuthModel {
   user: Partial<UserModel>;
 }
 
+const initUser: Partial<UserModel> = store.get(STORAGE.USER);
+const initTokenData: AuthModel['tokenData'] = store.get(STORAGE.TOKEN_DATA)
+
 const initialState: AuthState = {
-  user: {
+  user: initUser != undefined ? initUser : {
     _id: '',
   },
-  tokenData: {
+  tokenData: initTokenData != undefined ? initTokenData : {
     token: '',
-    expiresIn: 0,
-  },
-  isAuthenticated: false
+    expiresIn: 0
+  }
 }
 
 export const slice = createSlice({
@@ -32,9 +37,12 @@ export const slice = createSlice({
       })
       .addMatcher(authApi.endpoints.login.matchFulfilled, (state, action) => {
         console.log('fulfilled', action);
-        state.isAuthenticated = true;
-        state.tokenData = action.payload.tokenData;
-        state.user = action.payload.user;
+        console.log('authState', state);
+        state = merge({}, state, action.payload.data);
+        // save toke and user to storage
+        // (cookies or localStorage, the lib decide
+        store.set(STORAGE.USER, state.user);
+        store.set(STORAGE.TOKEN_DATA, state.tokenData);
       })
       .addMatcher(authApi.endpoints.login.matchRejected, (state, action) => {
         console.log('rejected', action);
