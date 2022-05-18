@@ -9,8 +9,6 @@ import { unstable_ClassNameGenerator as ClassNameGenerator } from '@mui/material
 import { Provider } from 'react-redux'
 import { store } from 'src/store';
 
-console.log('store', store);
-
 ClassNameGenerator.configure((componentName) =>
   componentName.replace('Mui', ''),
 );
