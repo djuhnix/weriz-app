@@ -1,21 +1,32 @@
-import React, { FC, useState } from 'react'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
+import React, { FC, useEffect, useState } from 'react';
+import Avatar from '@mui/material/Avatar';
+import LoadingButton from '@mui/lab/LoadingButton';
 import TextField from '@mui/material/TextField'
 import Grid from '@mui/material/Grid'
 import Box from '@mui/material/Box'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import Typography from '@mui/material/Typography'
 import { Routes } from 'src/navigation/Routes'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Copyright } from 'src/components/footer/Copyright'
-import { FormControl, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material'
+import {
+  colors,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+} from '@mui/material'
 import { Controller, useForm } from 'react-hook-form'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
-import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Config } from 'src/config'
 import { useLoginMutation } from 'src/store/auth/authApi'
+import { ApiStatusCode } from '../../enum/api'
+import { statusInRange } from '../../services/utils'
+import { selector } from '../../store'
+import { selectIsAuthenticated } from '../../store/auth/authSelector'
 // import { useAppSelector } from 'store'
 
 const schema = z.object({
@@ -37,20 +48,21 @@ export const AuthPage: FC<Props> = ({ mode = 'login'} : Props) => {
     // tos: false
   }
 
-  // const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const [login] = useLoginMutation();
+  const isAuthenticated = selector(selectIsAuthenticated);
+  const [login, { error, isError, isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
-
+  const [loginError, setLoginError] = useState('')
   const navigate = useNavigate();
+
   const location = useLocation();
   const locState = location.state as { from: Location} | null;
   const from = locState?.from?.pathname || Routes.root;
 
-/*
-  if (isAuthenticated) {
-    return <Navigate to={from} />
-  }
- */
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate(from);
+    }
+  }, []);
 
   const { handleSubmit, control, formState: { errors } } = useForm({
     defaultValues,
@@ -61,8 +73,14 @@ export const AuthPage: FC<Props> = ({ mode = 'login'} : Props) => {
     // const hashedPassword = bcrypt.hashSync(data.password) // hash created previously created upon sign up
     // not necessary 'cause of https ?
     login({email: data.email, password: data.password})
-    // after login navigate the user where he came from
-    navigate(from)
+      .unwrap()
+      // after login navigate the user where he came from
+      .then(() => navigate(from))
+      .catch(error => {
+        if ('status' in error && statusInRange(error.status, ApiStatusCode.BAD_REQUEST)) {
+          setLoginError("Vos identifiants sont incorrects");
+        }
+      })
   }
 
   const handleClickShowPassword = () => {
@@ -138,14 +156,18 @@ export const AuthPage: FC<Props> = ({ mode = 'login'} : Props) => {
             </FormControl>
           )}
         />
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{ mt: 3, mb: 2 }}
-        >
-          Se connecter
-        </Button>
+        {isError && (<Typography align="center" color={colors.red.A400}> {loginError} </Typography>)}
+        <Box textAlign='center'>
+          <LoadingButton
+            loading={isLoading}
+            type="submit"
+            fullWidth={!isLoading}
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+          >
+            Se connecter
+          </LoadingButton>
+        </Box>
         <Grid container>
           <Grid item xs>
             <Typography
