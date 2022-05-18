@@ -1,3 +1,10 @@
+import { number } from 'zod'
+import { ApiStatusCode } from '../enum/api'
+
+export const statusInRange = (status: number, httpCode: ApiStatusCode) => {
+  return status % httpCode < 99;
+}
+
 export const checkEmail = (email: string) => {
   return String(email)
     .toLowerCase()
