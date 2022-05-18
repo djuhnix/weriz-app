@@ -17,7 +17,6 @@ export const store = configureStore({
   },
   // Adding the api middleware enables caching, invalidation, polling,
   middleware: (getDefaultMiddleware) => {
-    console.log('auth middleware', authApi.middleware);
     return getDefaultMiddleware().concat(authApi.middleware, userApi.middleware)
   },
 });
