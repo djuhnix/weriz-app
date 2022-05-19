@@ -22,13 +22,14 @@ import { Controller, useForm } from 'react-hook-form'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import * as z from 'zod'
 import { Config } from 'src/config'
-import { useLoginMutation } from 'src/store/auth/authApi'
+import { useLoginMutation, useSignupMutation } from 'src/store/auth/authApi'
 import { ApiStatusCode } from '../../enum/api'
 import { statusInRange } from '../../services/utils'
 import { selector } from '../../store'
 import { selectIsAuthenticated } from '../../store/auth/authSelector'
 // import { useAppSelector } from 'store'
 
+// TODO add verification
 const schema = z.object({
   email: z.string({required_error: "L'adresse email est obligatoire"})
     .email({ message: "Adresse email invalide" }),
@@ -49,14 +50,20 @@ export const AuthPage: FC<Props> = ({ mode = 'login'} : Props) => {
   }
 
   const isAuthenticated = selector(selectIsAuthenticated);
-  const [login, { error, isError, isLoading }] = useLoginMutation();
-  const [showPassword, setShowPassword] = useState(false);
-  const [loginError, setLoginError] = useState('')
-  const navigate = useNavigate();
 
+  const [login, loginResult] = useLoginMutation();
+  const [signup, signupResult] = useSignupMutation();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const result = mode == 'signup' ? signupResult : loginResult;
+
+  const navigate = useNavigate();
   const location = useLocation();
+
   const locState = location.state as { from: Location} | null;
-  const from = locState?.from?.pathname || Routes.root;
+  const from = locState?.from?.pathname || Routes.rootFeed;
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -72,15 +79,27 @@ export const AuthPage: FC<Props> = ({ mode = 'login'} : Props) => {
   const onSubmit = (data: any) => {
     // const hashedPassword = bcrypt.hashSync(data.password) // hash created previously created upon sign up
     // not necessary 'cause of https ?
-    login({email: data.email, password: data.password})
-      .unwrap()
-      // after login navigate the user where he came from
-      .then(() => navigate(from))
-      .catch(error => {
-        if ('status' in error && statusInRange(error.status, ApiStatusCode.BAD_REQUEST)) {
-          setLoginError("Vos identifiants sont incorrects");
-        }
-      })
+    if (mode == 'login') {
+      login({email: data.email, password: data.password})
+        .unwrap()
+        // after login navigate the user where he came from
+        .then(() => navigate(from))
+        .catch(error => {
+          if ('status' in error && statusInRange(error.status, ApiStatusCode.BAD_REQUEST)) {
+            setSubmitError("Vos identifiants sont incorrects");
+          }
+        })
+    } else {
+      signup({email: data.email, password: data.password})
+        .unwrap()
+        // after login navigate the user where he came from
+        .then(() => navigate(from))
+        .catch(error => {
+          if ('status' in error && statusInRange(error.status, ApiStatusCode.BAD_REQUEST)) {
+            setSubmitError("Une erreur est survenue, veuillez vérifier vos informations");
+          }
+        })
+    }
   }
 
   const handleClickShowPassword = () => {
@@ -97,7 +116,7 @@ export const AuthPage: FC<Props> = ({ mode = 'login'} : Props) => {
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Weriz Connexion
+        Weriz {mode == 'login' ? 'Connexion' : 'Inscription' }
       </Typography>
       <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate={true} sx={{ mt: 1 }}>
         <Controller
@@ -156,16 +175,16 @@ export const AuthPage: FC<Props> = ({ mode = 'login'} : Props) => {
             </FormControl>
           )}
         />
-        {isError && (<Typography align="center" color={colors.red.A400}> {loginError} </Typography>)}
+        {result.isError && (<Typography align="center" color={colors.red.A400}> {submitError} </Typography>)}
         <Box textAlign='center'>
           <LoadingButton
-            loading={isLoading}
+            loading={result.isLoading}
             type="submit"
-            fullWidth={!isLoading}
+            fullWidth={!result.isLoading}
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Se connecter
+            {mode == 'login' ? 'Se connecter' : "S'inscrire"}
           </LoadingButton>
         </Box>
         <Grid container>
@@ -182,7 +201,9 @@ export const AuthPage: FC<Props> = ({ mode = 'login'} : Props) => {
               variant="body2"
               color="text.secondary"
             >
-              <Link to={Routes.rootSignup} color="grey">{"Vous n'avez pas de compte"}</Link>
+              {mode == 'login'
+                ? <Link to={Routes.rootSignup} color="grey">{"Vous n'avez pas de compte ?"}</Link>
+                : <Link to={Routes.rootLogin} color="grey">{"Vous avez déjà un compte ?"}</Link>}
             </Typography>
           </Grid>
         </Grid>
