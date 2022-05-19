@@ -13,6 +13,11 @@ ClassNameGenerator.configure((componentName) =>
   componentName.replace('Mui', ''),
 );
 
+const loader = document.querySelector('.loader')
+
+const showLoader = () => loader?.classList.remove('loader--hide');
+const hideLoader = () => loader?.classList.add('loader--hide');
+
 const root = createRoot(document.getElementById('root') as HTMLDivElement);
 
 root.render(
@@ -21,7 +26,10 @@ root.render(
       <BrowserRouter>
         <CssBaseline />
         {/* header */}
-        <AppNavigation />
+        <AppNavigation
+          hideLoader={hideLoader}
+          showLoader={showLoader}
+        />
         {/* footer */}
       </BrowserRouter>
     </Provider>
