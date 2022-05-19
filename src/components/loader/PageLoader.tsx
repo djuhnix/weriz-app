@@ -1,10 +1,14 @@
 import React from 'react'
-import { Box, CircularProgress } from '@mui/material'
+import { Backdrop, CircularProgress } from '@mui/material'
 
 export const PageLoader = () => {
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      open={true}
+      onClick={() => {}}
+    >
       <CircularProgress />
-    </Box>
+    </Backdrop>
   )
 }
