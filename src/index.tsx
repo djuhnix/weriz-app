@@ -8,6 +8,8 @@ import { unstable_ClassNameGenerator as ClassNameGenerator } from '@mui/material
 // import * as serviceWorker from 'serviceWorker';
 import { Provider } from 'react-redux'
 import { store } from 'src/store';
+import { Header } from 'src/components/header/Header';
+import Footer from './components/footer/Footer';
 
 ClassNameGenerator.configure((componentName) =>
   componentName.replace('Mui', ''),
@@ -23,14 +25,15 @@ const root = createRoot(document.getElementById('root') as HTMLDivElement);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
+
       <BrowserRouter>
         <CssBaseline />
-        {/* header */}
+        <Header />
         <AppNavigation
           hideLoader={hideLoader}
           showLoader={showLoader}
         />
-        {/* footer */}
+        <Footer />
       </BrowserRouter>
     </Provider>
   </React.StrictMode>

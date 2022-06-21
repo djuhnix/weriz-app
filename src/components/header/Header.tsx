@@ -1,22 +1,14 @@
 import React from 'react'
 import HeaderLogo from './HeaderLogo'
+import { PrimaryAppBar } from './PrimaryAppBar'
+import { isMobile } from 'react-device-detect';
 
-const Header = () => {
+export const Header = () => {
+  // do not display header on login (or landing?)
+  //
   return (
-    <header className="header header-1">
-      <div className="container">
-        <div className="header__wrapper">
-          <HeaderLogo logoPath={'assets/images/footer-logo.png'} />
-          {/* TODO header nav */}
-          <div className="header__bars">
-            <div className="header__bars-bar header__bars-bar-1" />
-            <div className="header__bars-bar header__bars-bar-2" />
-            <div className="header__bars-bar header__bars-bar-3" />
-          </div>
-        </div>
-      </div>
+    <header>
+      <PrimaryAppBar />
     </header>
   )
 }
-
-export default Header
