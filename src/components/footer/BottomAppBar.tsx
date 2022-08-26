@@ -31,7 +31,7 @@ const StyledFab = styled(Fab)({
 
 export const BottomAppBar = () => {
   return (
-      <AppBar position="fixed" color="transparent" sx={{ top: 'auto', bottom: 0}}>
+      <AppBar position="fixed" sx={{ top: 'auto', bottom: 0, backgroundColor: 'white'}}>
         <Toolbar sx={{ width: 'vw'}}>
 
           <StyledFab color="secondary" aria-label="add">
