@@ -1,9 +1,14 @@
+body {
+    background-color: #f3f2ef !important;
+}
+
 .loader {
     width: 8vmax;
     height: 8vmax;
-    border-right: 4px solid #ffffff;
+    border-right: 4px solid #3151a3;
     border-radius: 100%;
     animation: spinRight 800ms linear infinite;
+    margin: 30vh auto;
 }
 
 .loader .loader:before, .loader:after {
