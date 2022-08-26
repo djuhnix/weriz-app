@@ -6,7 +6,7 @@ interface UserState extends UserModel {}
 
 const initialState: UserState = {
   _id: '',
-  email: '',
+  username: '',
   password: ''
 }
 
