@@ -22,7 +22,7 @@ export const CommunitySelect: FC<Props> = () => {
 
   return (
     <div>
-      <FormControl sx={{ m: 1, minWidth: 145 }}>
+      <FormControl sx={{ mx: 2, minWidth: 145 }}>
         <InputLabel id="community-select-label">Communauté</InputLabel>
         <Select
           labelId="community-select-label"
