@@ -8,7 +8,7 @@ export const Header = () => {
   //
   return (
     <header>
-      <PrimaryAppBar />
+        {/*<PrimaryAppBar />*/}
     </header>
   )
 }
